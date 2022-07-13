@@ -17,6 +17,30 @@ jobs:
       - run:
           name: "Say hello"
           command: "echo Hello, World!"
+  
+  install-dependencies:
+    docker:
+      - image: circleci/python:3.6.1
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - run:
+          name: "install dependencies"
+          command: |
+            . /venv/bin/activate
+            make install
+  
+  lint:
+    docker:
+      - image: circleci/python:3.6.1
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - run:
+          name: "lint"
+          command: |
+            . /venv/bin/activate
+            make lint
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
@@ -24,3 +48,5 @@ workflows:
   say-hello-workflow:
     jobs:
       - say-hello
+      - install-dependencies
+      - lint
